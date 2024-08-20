@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{Mint, Token};
 
-use crate::state::UserAccount;
+use crate::state::stake_config::StakeConfig;
 
 #[derive(Accounts)]
 pub struct InitializeConfig<'info> {
@@ -10,8 +10,8 @@ pub struct InitializeConfig<'info> {
     #[account(
         init,
         payer = admin,
-        space = 8 + UserConfig::INIT_SPACE,
-        seeds = [b"config", user.key().as_ref()],
+        space = 8 + StakeConfig::INIT_SPACE,
+        seeds = [b"config", admin.key().as_ref()],
         bump
         )
     ]
@@ -23,7 +23,7 @@ pub struct InitializeConfig<'info> {
         seeds = [b"rewards", config.key().as_ref()],
         bump,
         mint::decimals = 6,
-        authority = config,
+        mint::authority = config,
     )]
     pub rewards_mint: Account<'info, Mint>,
 
@@ -39,7 +39,7 @@ impl<'info> InitializeConfig<'info> {
         freeze_period: u32,
         bumps: &InitializeConfigBumps,
     ) -> Result<()> {
-        self.config.set_inner(UserConfig {
+        self.config.set_inner(StakeConfig {
             points_per_stake,
             max_stake,
             freeze_period,

@@ -15,11 +15,11 @@ pub struct InitializeUser<'info> {
         )
     ]
     pub user_account: Account<'info, UserAccount>,
-    pub system_program: AccountInfo<'info>,
+    system_program: Program<'info, System>,
 }
 
 impl<'info> InitializeUser<'info> {
-    pub fn initialize_user(&mut self, bumps: &InitializeBumps) -> Result<()> {
+    pub fn initialize_user(&mut self, bumps: &InitializeUserBumps) -> Result<()> {
         self.user_account.set_inner(UserAccount {
             points: 0,
             amount_staked: 0,
